@@ -1,134 +1,153 @@
-// Configuración de la pantalla
-const canvas = document.createElement("canvas");
-canvas.width = 700;
-canvas.height = 775;
-document.body.appendChild(canvas);
-const ctx = canvas.getContext("2d");
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disparando ❤️ con Sandreke</title>
+    <style>
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        // Configuración de la pantalla
+        const canvas = document.createElement("canvas");
+        canvas.width = 700;
+        canvas.height = 775;
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext("2d");
 
-// Cargar imágenes
-const playerImage = new Image();
-playerImage.src = "imgs/messi.png";
+        // Cargar imágenes
+        const playerImage = new Image();
+        playerImage.src = "imgs/messi.png";
 
-const bulletImage = new Image();
-bulletImage.src = "imgs/corazón.png";
+        const bulletImage = new Image();
+        bulletImage.src = "imgs/corazón.png";
 
-const enemyImage = new Image();
-enemyImage.src = "imgs/antonela.png";
+        const enemyImage = new Image();
+        enemyImage.src = "imgs/antonela.png";
 
-const backgroundImage = new Image();
-backgroundImage.src = "imgs/fondo_amor.jpg";
+        const backgroundImage = new Image();
+        backgroundImage.src = "imgs/fondo_amor.jpg";
 
-// Jugador
-const player = {
-  x: canvas.width / 2 - 30,
-  y: canvas.height - 70,
-  width: 60,
-  height: 60,
-  speed: 15,
-};
+        // Jugador
+        const player = {
+            x: canvas.width / 2 - 30,
+            y: canvas.height - 70,
+            width: 60,
+            height: 60,
+            speed: 15,
+        };
 
-// Balas
-const bullets = [];
-const bulletSpeed = 10;
+        // Balas
+        const bullets = [];
+        const bulletSpeed = 10;
 
-// Enemigos
-const enemies = [];
-const enemySpeed = 5;
+        // Enemigos
+        const enemies = [];
+        const enemySpeed = 1.5;
 
-// Teclas presionadas
-const keysPressed = {
-  left: false,
-  right: false,
-};
+        // Teclas presionadas
+        const keysPressed = {
+            left: false,
+            right: false,
+        };
 
-// Manejo de eventos de teclado
-document.addEventListener("keydown", (event) => {
-  if (event.key === "ArrowLeft") keysPressed.left = true;
-  if (event.key === "ArrowRight") keysPressed.right = true;
-  if (event.key === " ") {
-    bullets.push({
-      x: player.x + player.width / 2 - 25,
-      y: player.y,
-      width: 50,
-      height: 50,
-    });
-  }
-});
+        // Manejo de eventos de teclado
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "ArrowLeft") keysPressed.left = true;
+            if (event.key === "ArrowRight") keysPressed.right = true;
+            if (event.key === " ") {
+                bullets.push({
+                    x: player.x + player.width / 2 - 25,
+                    y: player.y,
+                    width: 50,
+                    height: 50,
+                });
+            }
+        });
 
-document.addEventListener("keyup", (event) => {
-  if (event.key === "ArrowLeft") keysPressed.left = false;
-  if (event.key === "ArrowRight") keysPressed.right = false;
-});
+        document.addEventListener("keyup", (event) => {
+            if (event.key === "ArrowLeft") keysPressed.left = false;
+            if (event.key === "ArrowRight") keysPressed.right = false;
+        });
 
-// Bucle principal del juego
-function gameLoop() {
-  // Actualizar posición del jugador
-  if (keysPressed.left && player.x > 0) player.x -= player.speed;
-  if (keysPressed.right && player.x + player.width < canvas.width)
-    player.x += player.speed;
+        // Bucle principal del juego
+        function gameLoop() {
+            // Actualizar posición del jugador
+            if (keysPressed.left && player.x > 0) player.x -= player.speed;
+            if (keysPressed.right && player.x + player.width < canvas.width)
+                player.x += player.speed;
 
-  // Actualizar posición de las balas
-  bullets.forEach((bullet, index) => {
-    bullet.y -= bulletSpeed;
-    if (bullet.y + bullet.height < 0) bullets.splice(index, 1);
-  });
+            // Actualizar posición de las balas
+            bullets.forEach((bullet, index) => {
+                bullet.y -= bulletSpeed;
+                if (bullet.y + bullet.height < 0) bullets.splice(index, 1);
+            });
 
-  // Generar enemigos aleatorios
-  if (Math.random() < 0.05) {
-    enemies.push({
-      x: Math.random() * (canvas.width - 60),
-      y: 0,
-      width: 60,
-      height: 60,
-    });
-  }
+            // Generar enemigos aleatorios
+            if (Math.random() < 0.02) {
+                enemies.push({
+                    x: Math.random() * (canvas.width - 60),
+                    y: 0,
+                    width: 60,
+                    height: 60,
+                });
+            }
 
-  // Actualizar posición de los enemigos
-  enemies.forEach((enemy, index) => {
-    enemy.y += enemySpeed;
-    if (enemy.y > canvas.height) enemies.splice(index, 1);
-  });
+            // Actualizar posición de los enemigos
+            enemies.forEach((enemy, index) => {
+                enemy.y += enemySpeed;
+                if (enemy.y > canvas.height) enemies.splice(index, 1);
+            });
 
-  // Colisiones entre balas y enemigos
-  bullets.forEach((bullet, bulletIndex) => {
-    enemies.forEach((enemy, enemyIndex) => {
-      if (
-        bullet.x < enemy.x + enemy.width &&
-        bullet.x + bullet.width > enemy.x &&
-        bullet.y < enemy.y + enemy.height &&
-        bullet.y + bullet.height > enemy.y
-      ) {
-        bullets.splice(bulletIndex, 1);
-        enemies.splice(enemyIndex, 1);
-      }
-    });
-  });
+            // Colisiones entre balas y enemigos
+            bullets.forEach((bullet, bulletIndex) => {
+                enemies.forEach((enemy, enemyIndex) => {
+                    if (
+                        bullet.x < enemy.x + enemy.width &&
+                        bullet.x + bullet.width > enemy.x &&
+                        bullet.y < enemy.y + enemy.height &&
+                        bullet.y + bullet.height > enemy.y
+                    ) {
+                        bullets.splice(bulletIndex, 1);
+                        enemies.splice(enemyIndex, 1);
+                    }
+                });
+            });
 
-  // Colisiones entre jugador y enemigos
-  enemies.forEach((enemy) => {
-    if (
-      player.x < enemy.x + enemy.width &&
-      player.x + player.width > enemy.x &&
-      player.y < enemy.y + enemy.height &&
-      player.y + player.height > enemy.y
-    ) {
-      alert("¡Juego terminado!");
-      document.location.reload();
-    }
-  });
+            // Colisiones entre jugador y enemigos
+            enemies.forEach((enemy) => {
+                if (
+                    player.x < enemy.x + enemy.width &&
+                    player.x + player.width > enemy.x &&
+                    player.y < enemy.y + enemy.height &&
+                    player.y + player.height > enemy.y
+                ) {
+                    alert("¡Juego terminado!");
+                    document.location.reload();
+                }
+            });
 
-  // Dibujar todo
-  ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-  ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
-  bullets.forEach((bullet) => {
-    ctx.drawImage(bulletImage, bullet.x, bullet.y, bullet.width, bullet.height);
-  });
-  enemies.forEach((enemy) => {
-    ctx.drawImage(enemyImage, enemy.x, enemy.y, enemy.width, enemy.height);
-  });
+            // Dibujar todo
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+            bullets.forEach((bullet) => {
+                ctx.drawImage(bulletImage, bullet.x, bullet.y, bullet.width, bullet.height);
+            });
+            enemies.forEach((enemy) => {
+                ctx.drawImage(enemyImage, enemy.x, enemy.y, enemy.width, enemy.height);
+            });
 
-  requestAnimationFrame(gameLoop);
-}
+            requestAnimationFrame(gameLoop);
+        }
 
-// Iniciar el juego
-gameLoop();
+        // Iniciar el juego
+        gameLoop();
+    </script>
+</body>
+</html>
