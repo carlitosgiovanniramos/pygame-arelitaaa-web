@@ -13,6 +13,7 @@
     </style>
 </head>
 <body>
+    <h1 style="text-align: center; font-family: Arial, sans-serif; margin-top: 10px;">Para Arelita ❤️</h1>
     <script>
         // Configuración de la pantalla
         const canvas = document.createElement("canvas");
@@ -76,7 +77,17 @@
             if (event.key === "ArrowRight") keysPressed.right = false;
         });
 
-        // Bucle principal del juego
+        // Restablecer el estado del juego
+function resetGame() {
+    player.x = canvas.width / 2 - 30;
+    player.y = canvas.height - 70;
+    bullets.length = 0;
+    enemies.length = 0;
+    keysPressed.left = false;
+    keysPressed.right = false;
+}
+
+// Bucle principal del juego
         function gameLoop() {
             // Actualizar posición del jugador
             if (keysPressed.left && player.x > 0) player.x -= player.speed;
@@ -129,12 +140,15 @@
                     player.y + player.height > enemy.y
                 ) {
                     alert("¡Juego terminado!");
-                    document.location.reload();
+                    resetGame();
                 }
             });
 
             // Dibujar todo
-            ctx.globalAlpha = 0.7;
+            ctx.save();
+            ctx.globalAlpha = 0.5;
+            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+            ctx.restore();
             ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
             ctx.globalAlpha = 1.0;
             ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
